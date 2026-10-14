@@ -1,0 +1,14 @@
+# Node.js / Backend
+node_modules/
+.env
+dist/
+build/
+npm-debug.log*
+
+# Android Studio / Mobile App
+.gradle/
+.idea/
+*.iml
+app/build/
+local.properties
+.DS_Store

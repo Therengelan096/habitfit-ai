@@ -21,6 +21,10 @@ class Server {
         return db.sequelize.authenticate()
             .then(() => {
                 console.log('Database connected');
+                return db.sequelize.sync({ alter: true });
+            })
+            .then(() => {
+                console.log('Tablas sincronizadas correctamente');
             })
             .catch((error) => {
                 console.error('Error initializing database connection:', error);

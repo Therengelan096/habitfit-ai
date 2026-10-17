@@ -8,24 +8,15 @@ class Server {
     constructor() {
         this.app = express();
         this.port = config.PORT_BE || '3000';
-        this.apiPaths = {
-            index: '/api'
-        };
+        this.apiPaths = { index: '/api' };
 
         this.middlewares();
         this.routes();
     }
 
-    // Método de conexión a la base de datos
     async dbConnection() {
         return db.sequelize.authenticate()
-            .then(() => {
-                console.log('Database connected');
-                return db.sequelize.sync({ alter: true });
-            })
-            .then(() => {
-                console.log('Tablas sincronizadas correctamente');
-            })
+            .then(() => console.log('Database connected'))
             .catch((error) => {
                 console.error('Error initializing database connection:', error);
                 throw error;
@@ -43,7 +34,11 @@ class Server {
     }
 
     middlewares() {
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
         this.app.use(express.json());
     }
 

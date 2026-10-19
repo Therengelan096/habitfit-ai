@@ -1,9 +1,15 @@
 const Sequelize = require("sequelize");
 const sequelize = require("../db/connection");
 
-const db = {};
+const Usuario = require("./usuario/usuario.model");
+const PerfilCorporal = require("./usuario/perfilCorporal.model");
 
-db.Sequelize = Sequelize;
-db.sequelize = sequelize;
+Usuario.hasOne(PerfilCorporal, { foreignKey: 'usuarioId', as: 'perfil' });
+PerfilCorporal.belongsTo(Usuario, { foreignKey: 'usuarioId', as: 'usuario' });
 
-module.exports = db;
+module.exports = {
+  Sequelize,
+  sequelize,
+  Usuario,
+  PerfilCorporal
+};

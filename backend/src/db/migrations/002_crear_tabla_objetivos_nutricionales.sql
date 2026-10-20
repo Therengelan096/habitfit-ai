@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS objetivos_nutricionales (
+  "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  "caloriasDiarias" INTEGER NOT NULL,
+  "gramosProteina" FLOAT NOT NULL,
+  "gramosCarbohidratos" FLOAT NOT NULL,
+  "gramosGrasas" FLOAT NOT NULL,
+  "usuarioId" UUID REFERENCES usuarios("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

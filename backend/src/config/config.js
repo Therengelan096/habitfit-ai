@@ -1,4 +1,5 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
 module.exports = {
   development: {
@@ -9,5 +10,6 @@ module.exports = {
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false
-  }
+  },
+  JWT_SECRET: process.env.JWT_SECRET || 'dev-secret-key-habitfit'
 };

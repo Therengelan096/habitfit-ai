@@ -20,7 +20,8 @@ const register = async (req, res) => {
             return res.status(400).json({ok: false, message: error.details[0].message});
         }
 
-        const {nombre, apellido, email, password} = req.body;
+        const {nombre, apellido, password} = req.body;
+        const email = req.body.email.toLowerCase();
 
         const existingUser = await Usuario.findOne({where: {email}});
         if (existingUser) {
@@ -36,9 +37,9 @@ const register = async (req, res) => {
             password: hashedPassword
         });
 
-        const secretKey = config.JWT_SECRET|| process.env.JWT_SECRET || 'dev-secret-key-habitfit';
+        const secretKey = config.JWT_SECRET;
         const token = jwt.sign({id: user.id},secretKey,{
-            expiresIn: '7d',
+            expiresIn: '2h',
         });
 
         return res.status(201).json({

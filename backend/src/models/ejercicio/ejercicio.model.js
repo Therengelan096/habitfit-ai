@@ -10,10 +10,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             validate: {
                 notEmpty: { msg: "El nombre del ejercicio es obligatorio" },
+                len: {
+                    args: [1, 150],
+                    msg: "El nombre del ejercicio no puede superar los 150 caracteres",
+                },
             }
         },
         nivelDificultad: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM("Principiante", "Intermedio", "Avanzado"),
             allowNull: false
         },
         tipoMovimiento: {
@@ -26,7 +30,14 @@ module.exports = (sequelize, DataTypes) => {
         },
         equipamientoNecesario: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            validate: {
+                equipoRequerido(value) {
+                    if (this.requiereEquipo === true && (!value || value.trim() === "")) {
+                        throw new Error("El equipamiento necesario es obligatorio cuando el ejercicio requiere equipo");
+                    }
+                }
+            }
         },
         referenciaBibliografica: {
             type: DataTypes.TEXT,
@@ -36,7 +47,7 @@ module.exports = (sequelize, DataTypes) => {
             }
         },
         nivelEfectividad: {
-            type: DataTypes.STRING,
+            type: DataTypes.ENUM("Alto", "Óptimo"),
             allowNull: false
         }
     },{

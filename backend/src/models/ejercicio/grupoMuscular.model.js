@@ -11,6 +11,10 @@ module.exports = (sequelize, DataTypes) => {
         unique: true,
         validate: {
           notEmpty: { msg: "El nombre del grupo muscular es obligatorio" },
+          len: {
+            args: [1, 100],
+            msg: "El nombre de este no puede superar los 100 caracteres",
+          },
         }
       },
       descripcion: {

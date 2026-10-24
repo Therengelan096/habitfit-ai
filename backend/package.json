@@ -16,7 +16,8 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "jsonwebtoken": "^9.0.2",
+    "joi": "^18.3.0",
+    "jsonwebtoken": "^9.0.3",
     "pg": "^8.11.3",
     "sequelize": "^6.37.1",
     "ulid": "^3.0.1"

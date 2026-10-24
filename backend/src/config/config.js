@@ -1,4 +1,9 @@
-require('dotenv').config();
+const path = require('path');
+require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+
+if (!process.env.JWT_SECRET) {
+  throw new Error('La variable de entorno JWT_SECRET es obligatoria');
+}
 
 module.exports = {
   development: {
@@ -9,5 +14,6 @@ module.exports = {
     port: process.env.DB_PORT || 5432,
     dialect: 'postgres',
     logging: false
-  }
+  },
+  JWT_SECRET: process.env.JWT_SECRET
 };

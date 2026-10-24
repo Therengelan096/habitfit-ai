@@ -30,10 +30,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
-      validate: {
-        len: { args: [8, 100], msg: "Contraseña: 8-100 caracteres." }
-      }
+      allowNull: false
     },
     fechaNacimiento: {
       type: DataTypes.DATEONLY,

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const Joi = require('joi');
+const bcrypt = require('bcrypt');
 const {Usuario} = require('../models');
 const userDecorator = require('../decorators/user.decorator');
 const config = require('../config/config');
@@ -7,21 +7,7 @@ const hashPassword = require('../utils/hashPassword');
 
 const register = async (req, res) => {
     try {
-        const userValidator = Joi.object({
-            nombre: Joi.string().required().messages({'any.required': 'El nombre es obligatorio'}),
-            apellido: Joi.string().allow('', null),
-            email: Joi.string().email().required().messages({'string.email': 'El correo electrónico no es válido'}),
-            password: Joi.string().required().min(8).label('Password')
-                .messages({'string.min': 'La contraseña debe tener al menos 8 caracteres', 'any.required': 'La contraseña es obligatoria'}),
-        });
-
-        const{error}= userValidator.validate(req.body);
-        if (error) {
-            return res.status(400).json({ok: false, message: error.details[0].message});
-        }
-
-        const {nombre, apellido, password} = req.body;
-        const email = req.body.email.toLowerCase();
+        const {nombre, apellido, email, password} = req.body;
 
         const existingUser = await Usuario.findOne({where: {email}});
         if (existingUser) {
@@ -31,9 +17,9 @@ const register = async (req, res) => {
         const hashedPassword = await hashPassword(password);
 
         const user= await Usuario.create({
-            nombre, 
-            apellido, 
-            email, 
+            nombre,
+            apellido,
+            email,
             password: hashedPassword
         });
 
@@ -49,15 +35,39 @@ const register = async (req, res) => {
         });
     } catch (err) {
         console.error('Error al registrar usuario: ', err);
-        return res.status(500).json({ok: false, error: 'Error al registrar un usuario'});
+        return res.status(500).json({ok: false, error: 'Error interno al registrar un usuario'});
     }
 };
 
 const login = async (req, res) => {
     try {
-        return res.status(200).json({ok: true, message: 'Endpoint de login disponible'});
+        const {email, password} = req.body;
+
+        const user = await Usuario.findOne({where: {email}});
+
+        if (!user) {
+            await bcrypt.compare(password, '$2b$10$X8a/yE1n9Zf5rG6h.uDq.O/1V2W3X4Y5Z6A7B8C9D0E1F2G3H4I5J');
+            return res.status(401).json({ok: false, message: 'Credenciales incorrectas'});
+        }
+
+        const validPassword = await bcrypt.compare(password, user.password);
+        if (!validPassword) {
+            return res.status(401).json({ok: false, message: 'Credenciales incorrectas'});
+        }
+
+        const secretKey = config.JWT_SECRET;
+        const token = jwt.sign({id: user.id}, secretKey, {
+            expiresIn: '2h',
+        });
+
+        return res.status(200).json({
+            ok: true,
+            message: 'Inicio de sesión exitoso',
+            data: {token, user: userDecorator(user)}
+        });
     }catch (err) {
-        return res.status(500).json({ok: false, error: 'Error en servidor'});
+        console.error('Error en login: ', err);
+        return res.status(500).json({ok: false, error: 'Error interno del servidor'});
     }
 };
 

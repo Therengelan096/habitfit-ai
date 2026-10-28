@@ -3,6 +3,7 @@ const cors = require('cors');
 const config = require('./config/config');
 const db = require('./models');
 const routes = require('./routes/index.routes');
+const { iniciarJobDeRachas } = require('./jobs/racha.job');
 
 class Server {
     constructor() {
@@ -26,6 +27,7 @@ class Server {
     async prepare() {
         try {
             await this.dbConnection();
+            iniciarJobDeRachas();
             return this;
         } catch (error) {
             console.error('Error preparing server:', error);

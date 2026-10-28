@@ -46,6 +46,31 @@ module.exports = (sequelize, DataTypes) => {
     genero: {
       type: DataTypes.ENUM('masculino', 'femenino'),
       allowNull: true
+    },
+    rachaActual: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
+    },
+    escudosProtectores: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
+      validate: {
+        min: 0
+      }
+    },
+    activo: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true
+    },
+    ultimaEvaluacionRacha: {
+      type: DataTypes.DATEONLY,
+      allowNull: true
     }
   }, {
     timestamps: true,
@@ -55,6 +80,7 @@ module.exports = (sequelize, DataTypes) => {
   Usuario.associate = (models) => {
     Usuario.hasOne(models.PerfilCorporal, { foreignKey: 'usuarioId', as: 'perfil' });
     Usuario.hasOne(models.ObjetivoNutricional, { foreignKey: 'usuarioId', as: 'objetivosNutricionales' });
+    Usuario.hasMany(models.Entrenamiento, { foreignKey: 'usuarioId', as: 'entrenamientos' });
   };
 
   return Usuario;

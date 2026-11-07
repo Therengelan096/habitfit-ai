@@ -16,7 +16,7 @@ const iniciarJobDeRachas = () => {
     } catch (error) {
       console.error('Error al ejecutar el job de rachas:', error);
     }
-  });
+  }, { timezone: 'America/La_Paz' });
 
   console.log('Job de rachas programado para medianoche.');
   return tarea;

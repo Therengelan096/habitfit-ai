@@ -11,7 +11,15 @@ module.exports = (sequelize, DataTypes) => {
     },
     fecha: {
       type: DataTypes.DATEONLY,
-      allowNull: false
+      allowNull: false,
+      validate: {
+        notFuture(value) {
+          const hoy = new Date().toISOString().slice(0, 10);
+          if (value > hoy) {
+            throw new Error('La fecha no puede ser futura.');
+          }
+        }
+      }
     },
     completado: {
       type: DataTypes.BOOLEAN,

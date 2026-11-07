@@ -21,6 +21,15 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.TEXT,
         allowNull: true,
       },
+      categoria: {
+              type: DataTypes.ENUM('principal', 'avanzado', 'articulacion'),
+              defaultValue: 'principal',
+              allowNull: false
+            },
+            padreId: {
+              type: DataTypes.UUID,
+              allowNull: true
+            }
     },
     {
       tableName: "grupos_musculares",
@@ -30,6 +39,9 @@ module.exports = (sequelize, DataTypes) => {
 
   GrupoMuscular.associate = (models) => {
     GrupoMuscular.hasMany(models.Ejercicio, { foreignKey: "grupoMuscularId", as: "ejercicios"});
+    GrupoMuscular.hasMany(models.FatigaMuscular, { foreignKey: "grupoMuscularId", as: "fatigasAsociadas" });
+        GrupoMuscular.belongsTo(models.GrupoMuscular, { foreignKey: "padreId", as: "musculoPadre" });
+        GrupoMuscular.hasMany(models.GrupoMuscular, { foreignKey: "padreId", as: "subMusculos" });
   };
   return GrupoMuscular;
 };

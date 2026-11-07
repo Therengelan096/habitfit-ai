@@ -1,9 +1,8 @@
 const { Entrenamiento } = require('../models');
-const obtenerFechaActual = () => new Date().toISOString().slice(0, 10);
 
 const registrarEntrenamiento = async (req, res) => {
   try {
-    const fecha = obtenerFechaActual();
+    const { fechaLocal: fecha } = req.body;
     const [entrenamiento, creado] = await Entrenamiento.findOrCreate({
       where: {
         usuarioId: req.user.id,

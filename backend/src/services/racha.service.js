@@ -19,35 +19,58 @@ const procesarRachas = async ({
     const usuarios = await Usuario.findAll({
       where: { activo: true },
       attributes: ['id', 'rachaActual', 'escudosProtectores', 'ultimaEvaluacionRacha'],
+      include: [{
+        model: Entrenamiento,
+        as: 'entrenamientos',
+        attributes: ['id'],
+        where: {
+          fecha: fechaEntrenamiento,
+          completado: true
+        },
+        required: false
+      }],
       transaction,
       lock: transaction.LOCK.UPDATE
     });
+
+    const actualizaciones = [];
 
     for (const usuario of usuarios) {
       if (usuario.ultimaEvaluacionRacha === fechaEntrenamiento) {
         continue;
       }
 
-      const entrenamiento = await Entrenamiento.findOne({
-        where: {
-          usuarioId: usuario.id,
-          fecha: fechaEntrenamiento,
-          completado: true
-        },
-        transaction
-      });
+      const entrenoRealizado = (usuario.entrenamientos || []).length > 0;
+      let rachaActual = usuario.rachaActual;
+      let escudosProtectores = usuario.escudosProtectores;
 
-      if (entrenamiento) {
-        usuario.rachaActual += 1;
-      } else if (usuario.escudosProtectores > 0) {
-        usuario.escudosProtectores -= 1;
+      if (entrenoRealizado) {
+        rachaActual += 1;
+      } else if (escudosProtectores > 0) {
+        escudosProtectores -= 1;
       } else {
-        usuario.rachaActual = 0;
+        rachaActual = 0;
       }
 
-      usuario.ultimaEvaluacionRacha = fechaEntrenamiento;
-      await usuario.save({ transaction });
-      usuariosProcesados += 1;
+      actualizaciones.push({
+        id: usuario.id,
+        rachaActual,
+        escudosProtectores,
+        ultimaEvaluacionRacha: fechaEntrenamiento
+      });
+    }
+
+    if (actualizaciones.length > 0) {
+      await Usuario.bulkCreate(actualizaciones, {
+        transaction,
+        updateOnDuplicate: [
+          'rachaActual',
+          'escudosProtectores',
+          'ultimaEvaluacionRacha',
+          'updatedAt'
+        ]
+      });
+      usuariosProcesados = actualizaciones.length;
     }
   });
 

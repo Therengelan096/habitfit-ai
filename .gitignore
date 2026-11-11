@@ -7,6 +7,7 @@ npm-debug.log*
 
 # Android Studio / Mobile App
 .gradle/
+.vscode/
 .idea/
 *.iml
 app/build/

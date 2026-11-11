@@ -18,6 +18,7 @@
     "express": "^4.19.2",
     "joi": "^18.3.0",
     "jsonwebtoken": "^9.0.3",
+    "node-cron": "^4.6.0",
     "pg": "^8.11.3",
     "sequelize": "^6.37.1",
     "ulid": "^3.0.1"

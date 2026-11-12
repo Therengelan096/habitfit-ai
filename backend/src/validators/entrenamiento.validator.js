@@ -16,19 +16,40 @@ const fechaLocal = Joi.string()
 
     return value;
   })
-  .required()
+  .optional()
   .messages({
-    'string.empty': 'La fecha local es obligatoria.',
-    'any.required': 'La fecha local es obligatoria.',
     'string.pattern.base': 'La fecha local debe tener formato YYYY-MM-DD.',
     'date.invalid': 'La fecha local no es válida.'
   });
 
 const entrenamientoValidator = (req, res, next) => {
-  const { error, value } = Joi.object({ fechaLocal }).validate(req.body);
+  const schema = Joi.object({
+    fechaLocal,
+    ejerciciosCompletados: Joi.array().items(
+      Joi.object({
+        ejercicioId: Joi.string().guid({ version: ['uuidv4'] }).required().messages({
+          'string.guid': 'El ejercicioId debe ser un UUID válido.',
+          'any.required': 'El ejercicioId es obligatorio.'
+        }),
+        series: Joi.number().integer().positive().required().messages({
+          'number.base': 'Las series deben ser un número.',
+          'number.integer': 'Las series deben ser un número entero.',
+          'number.positive': 'Las series deben ser un número positivo.',
+          'any.required': 'Las series son obligatorias.'
+        }),
+        repeticiones: Joi.number().integer().positive().required().messages({
+          'number.base': 'Las repeticiones deben ser un número.',
+          'number.integer': 'Las repeticiones deben ser un número entero.',
+          'number.positive': 'Las repeticiones deben ser un número positivo.',
+          'any.required': 'Las repeticiones son obligatorias.'
+        })
+      })
+    ).optional()
+  });
 
+  const { error, value } = schema.validate(req.body);
   if (error) {
-    return res.status(400).json({ ok: false, message: error.details[0].message });
+    return res.status(400).json({ ok: false, error: error.details[0].message });
   }
 
   req.body = value;

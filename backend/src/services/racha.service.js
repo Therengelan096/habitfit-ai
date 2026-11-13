@@ -5,11 +5,14 @@ const fechaAnterior = (fecha) => {
 };
 
 const obtenerFechaActual = () => new Date().toISOString().slice(0, 10);
+const { asignarLogrosPorRacha } = require('./logro.service');
 
 const procesarRachas = async ({
   sequelize,
   Usuario,
   Entrenamiento,
+  Achievement,
+  UserAchievement,
   fechaEvaluacion = obtenerFechaActual()
 }) => {
   const fechaEntrenamiento = fechaAnterior(fechaEvaluacion);
@@ -70,6 +73,17 @@ const procesarRachas = async ({
           'updatedAt'
         ]
       });
+      if (Achievement && UserAchievement) {
+        for (const actualizacion of actualizaciones) {
+          await asignarLogrosPorRacha({
+            Achievement,
+            UserAchievement,
+            userId: actualizacion.id,
+            rachaActual: actualizacion.rachaActual,
+            transaction
+          });
+        }
+      }
       usuariosProcesados = actualizaciones.length;
     }
   });

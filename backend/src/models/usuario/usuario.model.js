@@ -82,6 +82,7 @@ module.exports = (sequelize, DataTypes) => {
     Usuario.hasOne(models.ObjetivoNutricional, { foreignKey: 'usuarioId', as: 'objetivosNutricionales' });
     Usuario.hasMany(models.Entrenamiento, { foreignKey: 'usuarioId', as: 'entrenamientos' });
     Usuario.hasMany(models.FatigaMuscular, { foreignKey: 'usuarioId', as: 'estadoMuscular' });
+    Usuario.hasMany(models.UserAchievement, { foreignKey: 'usuarioId', as: 'logros' });
   };
 
   return Usuario;

@@ -26,11 +26,10 @@ ON CONFLICT ("codigo") DO UPDATE SET
 
 CREATE TABLE IF NOT EXISTS usuarios_logros (
   "id" UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  "usuarioId" UUID NOT NULL REFERENCES usuarios("id") ON DELETE CASCADE,
-  "logroId" UUID NOT NULL REFERENCES logros("id") ON DELETE CASCADE,
+  "usuarioId" UUID NOT NULL REFERENCES usuarios ("id") ON DELETE CASCADE,
+  "logroId" UUID NOT NULL REFERENCES logros ("id") ON DELETE CASCADE,
   "otorgadoEn" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CONSTRAINT usuarios_logros_usuario_logro_unico UNIQUE ("usuarioId", "logroId")
+  CONSTRAINT usuarios_logros_usuario_logro_unica UNIQUE ("usuarioId", "logroId")
 );
-

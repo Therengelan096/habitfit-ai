@@ -25,8 +25,7 @@ const listarLogros = async (req, res) => {
         earned: otorgados.has(logro.id),
         earnedAt: otorgados.get(logro.id) || null,
         details: {
-          thresholdDays: logro.diasRacha,
-          earnedAt: otorgados.get(logro.id) || null
+          thresholdDays: logro.diasRacha
         }
       }))
     });

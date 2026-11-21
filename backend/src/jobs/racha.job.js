@@ -8,7 +8,9 @@ const iniciarJobDeRachas = () => {
       const resultado = await procesarRachas({
         sequelize: db.sequelize,
         Usuario: db.Usuario,
-        Entrenamiento: db.Entrenamiento
+        Entrenamiento: db.Entrenamiento,
+        Achievement: db.Achievement,
+        UserAchievement: db.UserAchievement
       });
       console.log(
         `Job de rachas completado: ${resultado.usuariosProcesados} usuarios procesados`

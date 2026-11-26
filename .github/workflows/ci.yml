@@ -42,6 +42,18 @@ jobs:
         working-directory: ./backend
         run: npm ci
 
+      - name: Ejecutar migraciones
+        working-directory: ./backend
+        env:
+          DB_USER: postgres
+          DB_PASSWORD: testpassword123
+          DB_NAME: habitfit_test
+          DB_HOST: localhost
+          DB_PORT: 5432
+          JWT_SECRET: secreto_falso_para_tests
+          NODE_ENV: test
+        run: npm run migrate
+
       - name: Ejecutar pruebas
         working-directory: ./backend
         env:
@@ -49,6 +61,8 @@ jobs:
           DB_PASSWORD: testpassword123
           DB_NAME: habitfit_test
           DB_HOST: localhost
+          DB_PORT: 5432
           JWT_SECRET: secreto_falso_para_tests
+          FACTOR_BASE_FATIGA: 0.5
           NODE_ENV: test
         run: npm test
